@@ -1,0 +1,6 @@
+{
+  "rules": {
+    "class-name": true,
+    "curly": true
+  }
+}

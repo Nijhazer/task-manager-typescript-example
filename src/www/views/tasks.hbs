@@ -1,0 +1,35 @@
+<h1>Task Manager</h1>
+
+<div id="tasks-list">
+
+    <h2>Current Tasks</h2>
+
+    {{#each tasks}}
+    <div class="row">
+        <div class="col-xs-12 checkbox">
+            <label>
+                <input type="checkbox" value="{{this._id}}"> {{this.title}}
+            </label>
+        </div>
+    </div>
+    {{/each}}
+
+    <button type="button" class="btn btn-default" data-control="tasks.delete">Mark as Complete</button>
+</div>
+
+<div id="tasks-create">
+
+    <h2>Create New Task</h2>
+
+    <form class="form-inline">
+
+        <div class="form-group">
+            <label for="exampleInputName2">Title</label>
+            <input type="text" class="form-control" name="task.title">
+        </div>
+
+        <button type="button" class="btn btn-default" data-control="tasks.create">Create</button>
+
+    </form>
+
+</div>
