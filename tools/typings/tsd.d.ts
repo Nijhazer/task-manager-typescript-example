@@ -13,3 +13,6 @@
 /// <reference path="es6-promise/es6-promise.d.ts" />
 /// <reference path="body-parser/body-parser.d.ts" />
 /// <reference path="handlebars/handlebars.d.ts" />
+/// <reference path="sinon/sinon.d.ts" />
+/// <reference path="chai-as-promised/chai-as-promised.d.ts" />
+/// <reference path="promises-a-plus/promises-a-plus.d.ts" />

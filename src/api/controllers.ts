@@ -21,10 +21,10 @@ export class ExpressController<T extends IStorable> implements IExpressControlle
 
     public findById() {
         var manager = this._manager;
-        return function(request: Express.Request, response: Express.Response) {
-            manager.findOne(request.params.id).then(function(results) {
+        return (request: Express.Request, response: Express.Response) => {
+            manager.findOne(request.params.id).then((results) => {
                 response.send(results);
-            }, function(error) {
+            }, (error) => {
                 console.log(error, 'error occurred when searching for a document');
                 response.send(error);
             });
@@ -33,10 +33,10 @@ export class ExpressController<T extends IStorable> implements IExpressControlle
 
     public findAll() {
         var manager = this._manager;
-        return function(request: Express.Request, response: Express.Response) {
-            manager.findAll().then(function(results) {
+        return (request: Express.Request, response: Express.Response) => {
+            manager.findAll().then((results) => {
                 response.send(results);
-            }, function(error) {
+            }, (error) => {
                 console.log(error, 'error occurred when searching for documents');
                 response.send(error);
             });
@@ -45,16 +45,16 @@ export class ExpressController<T extends IStorable> implements IExpressControlle
 
     public create() {
         var manager = this._manager;
-        return function(request: Express.Request, response: Express.Response) {
+        return (request: Express.Request, response: Express.Response) => {
             var obj = manager.newObjectOfType();
 
-            _.each(_.keys(request.body), function(bodyKey) {
+            _.each(_.keys(request.body), (bodyKey) => {
                 obj[bodyKey] = request.body[bodyKey];
             });
 
-            manager.createOne(obj).then(function(document) {
+            manager.createOne(obj).then((document) => {
                 response.send(document);
-            }, function(error) {
+            }, (error) => {
                 console.log(error, 'error occurred when creating document');
                 response.send(error);
             });
@@ -63,18 +63,18 @@ export class ExpressController<T extends IStorable> implements IExpressControlle
 
     public update() {
         var manager = this._manager;
-        return function(request: Express.Request, response: Express.Response) {
+        return (request: Express.Request, response: Express.Response) => {
             var documentForUpdate = manager.newObjectOfType();
 
             documentForUpdate._id = request.params.id;
 
-            _.each(_.keys(request.body), function(key) {
+            _.each(_.keys(request.body), (key) => {
                 documentForUpdate[key] = request.body[key];
             });
 
-            manager.update(documentForUpdate).then(function(result) {
+            manager.update(documentForUpdate).then((result) => {
                 response.send(result);
-            }, function(error) {
+            }, (error) => {
                 console.log(error, 'error occurred when updating document');
                 response.send(error);
             });
@@ -83,10 +83,10 @@ export class ExpressController<T extends IStorable> implements IExpressControlle
 
     public remove() {
         var manager = this._manager;
-        return function(request: Express.Request, response: Express.Response) {
-            manager.remove(request.params.id).then(function(result) {
+        return (request: Express.Request, response: Express.Response) => {
+            manager.remove(request.params.id).then((result) => {
                 response.send('ok');
-            }, function(error) {
+            }, (error) => {
                 console.log(error, 'error occurred when removing document');
                 response.send(error);
             });

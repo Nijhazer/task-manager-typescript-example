@@ -12,13 +12,13 @@
       "commit": "d2bab5738b84b91d8ee18a68c7b379a9714cf82f"
     },
     "assertion-error/assertion-error.d.ts": {
-      "commit": "14ab703f435375194360cdba3abab61afc879c18"
+      "commit": "ba424f7ee39717d51c17699a09ac8df312a7e9a1"
     },
     "mocha/mocha.d.ts": {
       "commit": "14ab703f435375194360cdba3abab61afc879c18"
     },
     "chai/chai.d.ts": {
-      "commit": "14ab703f435375194360cdba3abab61afc879c18"
+      "commit": "ba424f7ee39717d51c17699a09ac8df312a7e9a1"
     },
     "lodash/lodash.d.ts": {
       "commit": "3191f6e0088eee07c4d8fd24e4d27a40a60d9eb9"
@@ -49,6 +49,15 @@
     },
     "handlebars/handlebars.d.ts": {
       "commit": "fa04c80f4a889613b96cb4f283848c61a9f64233"
+    },
+    "sinon/sinon.d.ts": {
+      "commit": "ba424f7ee39717d51c17699a09ac8df312a7e9a1"
+    },
+    "chai-as-promised/chai-as-promised.d.ts": {
+      "commit": "ba424f7ee39717d51c17699a09ac8df312a7e9a1"
+    },
+    "promises-a-plus/promises-a-plus.d.ts": {
+      "commit": "ba424f7ee39717d51c17699a09ac8df312a7e9a1"
     }
   }
 }
