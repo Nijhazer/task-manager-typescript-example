@@ -1,23 +1,24 @@
 'use strict';
 
-var path = require('path'),
+require('dotenv').load();
+
+var _ = require('lodash'),
+    path = require('path'),
+    jsonfile = require('jsonfile'),
     gulp = require('gulp'),
     debug = require('gulp-debug'),
     plumber = require('gulp-plumber'),
     merge = require('merge-stream'),
     concat = require('gulp-concat'),
-    inject = require('gulp-inject'), 
+    inject = require('gulp-inject'),
     tsc = require('gulp-typescript'),
     tslint = require('gulp-tslint'),
-    sourcemaps = require('gulp-sourcemaps'),
     del = require('del'),
     browserSync = require('browser-sync'),
     superstatic = require('superstatic'),
     mkdir = require('safe-mkdir').mkdirSync,
     KarmaServer = require('karma').Server,
     Q = require('q'),
-    defineModule = require('gulp-define-module'),
-    _handlebars = require('handlebars'),
     handlebars = require('gulp-handlebars');
 
 var outDirParent = 'generated',
@@ -71,9 +72,30 @@ var lint = function(input) {
     return deferred.promise;
 };
 
-/**
- * Compile TypeScript and include references to library and app .d.ts files.
- */
+gulp.task('mkservedir:www', function() {
+    var deferred = Q.defer();
+
+    del([serveDir]).then(function() {
+        mkdir(serveDir);
+        deferred.resolve();
+    }, function(error) {
+        deferred.reject(error);
+    });
+
+    return deferred.promise;
+});
+
+
+gulp.task('config:www', ['mkservedir:www'], function() {
+    var config = {};
+    _.each(_.keys(process.env), function(key) {
+        if (_.startsWith(key, 'UI_')) {
+            config[key] = process.env[key];
+        }
+    });
+    jsonfile.writeFileSync(serveDir + '/config.json', config);
+});
+
 gulp.task('compile:www', function () {
     var deferred = Q.defer();
     
@@ -122,25 +144,21 @@ gulp.task('compile:api', [], function() {
     return deferred.promise;
 });
 
-gulp.task('copy:www', ['compile:www'], function() {
+gulp.task('copy:www', ['compile:www', 'mkservedir:www', 'config:www'], function() {
     var deferred = Q.defer();
 
-    del([serveDir]).then(function(paths) {
-        mkdir(serveDir);
-
-        gulp.src('./src/www/**')
-            .pipe(gulp.dest('./' + serveDir))
-            .on('end', function() {
-                gulp.src('./' + outDirParent + '/www/{core,ui}/**')
-                    .pipe(gulp.dest('./' + serveDir + '/js/lib'))
-                    .on('error', function(error) {
-                        deferred.reject(error);
-                    })
-                    .on('end', function() {
-                        deferred.resolve();
-                    });
-            });
-    });
+    gulp.src('./src/www/**')
+        .pipe(gulp.dest('./' + serveDir))
+        .on('end', function() {
+            gulp.src('./' + outDirParent + '/www/{core,ui}/**')
+                .pipe(gulp.dest('./' + serveDir + '/js/lib'))
+                .on('error', function(error) {
+                    deferred.reject(error);
+                })
+                .on('end', function() {
+                    deferred.resolve();
+                });
+        });
 
     return deferred.promise;
 });

@@ -3,6 +3,7 @@ import Handlebars = require('handlebars');
 import $ = require('jquery');
 import _ = require('lodash');
 import {ITask} from "../core/task";
+import {IUIConfig} from "./config";
 
 export interface ITemplateProvider<T> {
     getTemplate(templateKey : string) : Promise<T>;
@@ -37,6 +38,7 @@ export class HandlebarsTemplateProvider implements ITemplateProvider<HandlebarsT
 }
 
 export interface IAPIManager<T> {
+    config: IUIConfig;
     newObjectOfType() : T;
     findOne(documentId : any) : Promise<T>;
     findAll() : Promise<T[]>;
@@ -47,8 +49,14 @@ export interface IAPIManager<T> {
 
 export class JQueryAjaxManager<T> implements IAPIManager<T> {
     private typeForInstantiation : any;
+    private _config : IUIConfig;
 
-    constructor(typeForInstantiation : any) {
+    public set config(config: IUIConfig) {
+        this._config = config;
+    }
+
+    constructor(config: IUIConfig, typeForInstantiation : any) {
+        this.config = config;
         this.typeForInstantiation = typeForInstantiation;
     }
 
@@ -64,7 +72,7 @@ export class JQueryAjaxManager<T> implements IAPIManager<T> {
         var self = this;
         return new Promise<T[]>((resolve, reject) => {
             $.ajax({
-                url: 'http://localhost:9000/api' + Task.API_BASE_URL,
+                url: self._config.apiBaseURL + Task.API_BASE_URL,
                 method: 'GET',
                 dataType: 'json',
                 contentType: 'application/json'
@@ -92,7 +100,7 @@ export class JQueryAjaxManager<T> implements IAPIManager<T> {
         var self = this;
         return new Promise<T>((resolve, reject) => {
             $.ajax({
-                url: 'http://localhost:9000/api' + Task.API_BASE_URL,
+                url: self._config.apiBaseURL + Task.API_BASE_URL,
                 method: 'POST',
                 dataType: 'json',
                 contentType: 'application/json',
@@ -134,9 +142,10 @@ export class JQueryAjaxManager<T> implements IAPIManager<T> {
     }
 
     removeOne(documentId:any):Promise<any> {
+        var self = this;
         return new Promise<any>((resolve, reject) => {
             $.ajax({
-                url: 'http://localhost:9000/api' + Task.API_BASE_URL + '/' + documentId,
+                url: self._config.apiBaseURL + Task.API_BASE_URL + '/' + documentId,
                 method: 'DELETE'
             }).done((response) => {
                 resolve(response);
@@ -149,15 +158,15 @@ export class JQueryAjaxManager<T> implements IAPIManager<T> {
 
 export class TaskController {
     private _templateProvider : HandlebarsTemplateProvider;
-    private dataManager : JQueryAjaxManager<ITask>;
+    private _dataManager : JQueryAjaxManager<ITask>;
     private element : JQuery;
-
-    constructor() {
-        this.dataManager = new JQueryAjaxManager<ITask>(Task);
-    }
 
     public set templateProvider(templateProvider : HandlebarsTemplateProvider) {
         this._templateProvider = templateProvider;
+    }
+
+    public set dataManager(dataManager : JQueryAjaxManager<ITask>) {
+        this._dataManager = dataManager;
     }
 
     public bindTo(selector : string) {
@@ -206,7 +215,7 @@ export class TaskController {
     public renderTasks() : Promise<string> {
         var self = this;
         return new Promise<string>((resolve) => {
-            self.dataManager.findAll().then((tasks) => {
+            self._dataManager.findAll().then((tasks) => {
                 self._templateProvider
                     .getTemplate('views/tasks.hbs')
                     .then((template) => {
@@ -221,7 +230,7 @@ export class TaskController {
     public deleteTasks(taskIds : string[]) : Promise<string> {
         var self = this;
         return new Promise<string>((resolve) => {
-            self.dataManager.remove(taskIds).then(() => {
+            self._dataManager.remove(taskIds).then(() => {
                 self.renderTasks().then((content) => {
                     resolve(content);
                 });
@@ -232,7 +241,7 @@ export class TaskController {
     public createTask(task : Task) : Promise<string> {
         var self = this;
         return new Promise<string>((resolve, reject) => {
-            self.dataManager.createOne(task).then(() => {
+            self._dataManager.createOne(task).then(() => {
                 self.renderTasks().then((content) => {
                     resolve(content);
                 });
