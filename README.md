@@ -96,3 +96,11 @@ whereas API classes are compiled as CommonJS modules.
 `src/www` - Static assets for the UI (HTML, CSS, third-party JavaScript libraries).
 
 `src/www/views` - [Handlebars templates](http://handlebarsjs.com/) used by the UI.
+
+`src/test` - Unit tests. Any unit tests beginning with `spec.api.` will be compiled as CommonJS modules
+and executed using Mocha. Any unit tests beginning with `spec.ui.` will be compiled as AMD modules
+and executed using Karma.
+
+`src/test/karma-test-runner.js` - Karma runs the tests using RequireJS. This is the 'main' file
+used by RequireJS during tests in order to load dependencies. Whenever you add a UI dependency
+via Bower, you'll need to update the `paths` configuration in this file as well.

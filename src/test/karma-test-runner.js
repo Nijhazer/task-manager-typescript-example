@@ -24,10 +24,11 @@ require.config({
   baseUrl: config.baseUrl,
   
   paths: {
-    'chai': config.baseAPILib + '/chai/chai',
-    'lodash': config.baseUILib + '/lodash/lodash.min',
-    'jquery': config.baseUILib + '/jquery/dist/jquery.min',
-    'promise': config.baseUILib + '/es6-promise/promise.min'
+      'chai': config.baseAPILib + '/chai/chai',
+      'lodash': config.baseUILib + '/lodash/lodash.min',
+      'jquery': config.baseUILib + '/jquery/dist/jquery.min',
+      'promise': config.baseUILib + '/es6-promise/promise.min',
+      'handlebars': config.baseUILib + 'handlebars/handlebars.amd.min'
   },
 
   // dynamically load all test files
