@@ -60,7 +60,7 @@ Gulp will build the API and start running the server on port 9000. Press `Ctrl+C
 
 ### Starting the application ###
 
-While the API is running, open anoher terminal window and run this command: `gulp serve:www`
+While the API is running, open another terminal window and run this command: `gulp serve:www`
 
 Gulp will build the UI and serve it up on port 3000. If you modify any TypeScript files, they will be automatically recompiled.
 
