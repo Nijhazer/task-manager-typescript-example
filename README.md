@@ -29,9 +29,13 @@ so that you can run the unit tests.
 
 `npm install -g karma`
 
-Finally, install local dependencies specified in package.json:
+Install local dependencies specified in package.json:
 
 `npm install`
+
+Finally, install the TypeScript type definitions needed for third-party libraries that we're using:
+
+`tsd reinstall`
 
 ### Configuration ###
 
