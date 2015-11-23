@@ -7,6 +7,7 @@ var _ = require('lodash'),
     exec = require('child_process').exec,
     jsonfile = require('jsonfile'),
     gulp = require('gulp'),
+    mocha = require('gulp-mocha'),
     debug = require('gulp-debug'),
     plumber = require('gulp-plumber'),
     merge = require('merge-stream'),
@@ -107,13 +108,14 @@ gulp.task('compile:www', function () {
     var codeSrc = [
         'src/core/**/*.ts',
         'src/ui/**/*.ts',
-        'src/test/**/*.ts'
+        'src/test/**/spec.ui.*.ts'
     ];
     
     lint(codeSrc).then(function() {
         compile({
             dir: 'www',
             module: 'amd',
+            target: 'es5',
             input: ['tools/**'].concat(codeSrc)
         }).then(function() {
             deferred.resolve();
@@ -130,7 +132,8 @@ gulp.task('compile:api', [], function() {
     
     var codeSrc = [
         'src/core/**/*.ts',
-        'src/api/**/*.ts'
+        'src/api/**/*.ts',
+        'src/test/**/spec.api.*.ts'
     ];
     
     lint(codeSrc).then(function() {
@@ -149,6 +152,21 @@ gulp.task('compile:api', [], function() {
     return deferred.promise;
 });
 
+gulp.task('test:api', ['compile:api'], function() {
+    return gulp.src(outDirParent + '/api/test/**/*.js', {
+        read: false
+    }).pipe(mocha({
+        reporter: 'spec'
+    }));
+});
+
+gulp.task('test:www', ['compile:www'], function (done) {
+    new KarmaServer({
+        configFile: __dirname + '/karma.conf.js',
+        singleRun: true
+    }, done).start();
+});
+
 gulp.task('serve:api', ['compile:api'], function() {
     var deferred = Q.defer();
 
@@ -162,7 +180,7 @@ gulp.task('serve:api', ['compile:api'], function() {
     });
 
     return deferred.promise;
-})
+});
 
 gulp.task('copy:www', ['compile:www', 'mkservedir:www', 'config:www'], function() {
     var deferred = Q.defer();

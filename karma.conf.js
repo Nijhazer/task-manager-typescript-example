@@ -16,8 +16,9 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       'src/test/karma-test-runner.js',
-      {pattern: 'compiled/**/*.js', included: false},
-      {pattern: 'node_modules/lodash*/**/*.js', included: false}
+      {pattern: 'generated/www/**/*.js', included: false},
+      {pattern: 'src/www/js/lib/**/*.js', included: false}
+      //{pattern: 'node_modules/lodash*/**/*.js', included: false}
     ],
 
 
@@ -35,7 +36,7 @@ module.exports = function(config) {
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['progress'],
+    reporters: ['spec'],
 
 
     // web server port
@@ -53,7 +54,6 @@ module.exports = function(config) {
 
     // enable / disable watching file and executing tests whenever any file changes
     autoWatch: false,
-
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher

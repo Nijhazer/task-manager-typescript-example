@@ -1,9 +1,16 @@
+var baseUrl = '/base';
+var config = {
+    baseUrl: baseUrl,
+    baseUILib: baseUrl + '/src/www/js/lib',
+    baseAPILib: baseUrl + '/node_modules',
+    fileInclusionTest: /spec\..+\.js$/i
+};
+
 var allTestFiles = [];
-var TEST_REGEXP = /spec\..+\.js$/i;
 
 // Get a list of all the test files to include
 Object.keys(window.__karma__.files).forEach(function(file) {
-  if (TEST_REGEXP.test(file)) {
+  if (config.fileInclusionTest.test(file)) {
     // Normalize paths to RequireJS module names.
     // If you require sub-dependencies of test files to be loaded as-is (requiring file extension)
     // then do not normalize the paths
@@ -12,14 +19,15 @@ Object.keys(window.__karma__.files).forEach(function(file) {
   }
 });
 
-var baseUrl = '/base';
 require.config({
   // Karma serves files under /base, which is the basePath from your config file
-  baseUrl: baseUrl,
+  baseUrl: config.baseUrl,
   
   paths: {
-    'chai': baseUrl + '/node_modules/chai/chai',
-    'lodash': baseUrl + '/node_modules/lodash/index'
+    'chai': config.baseAPILib + '/chai/chai',
+    'lodash': config.baseUILib + '/lodash/lodash.min',
+    'jquery': config.baseUILib + '/jquery/dist/jquery.min',
+    'promise': config.baseUILib + '/es6-promise/promise.min'
   },
 
   // dynamically load all test files
