@@ -4,6 +4,7 @@ require('dotenv').load();
 
 var _ = require('lodash'),
     path = require('path'),
+    exec = require('child_process').exec,
     jsonfile = require('jsonfile'),
     gulp = require('gulp'),
     debug = require('gulp-debug'),
@@ -47,9 +48,13 @@ var compile = function(params) {
             .pipe(tsc(projectConfig));
     
         tsResult.js.pipe(
-            gulp.dest(outDir));
-            
-        deferred.resolve();
+            gulp.dest(outDir))
+            .on('end', function() {
+                deferred.resolve();
+            })
+            .on('error', function() {
+                deferred.reject();
+            });
     });
     
     return deferred.promise;
@@ -143,6 +148,21 @@ gulp.task('compile:api', [], function() {
     
     return deferred.promise;
 });
+
+gulp.task('serve:api', ['compile:api'], function() {
+    var deferred = Q.defer();
+
+    exec('node ' + outDirParent + '/api/api/server.js', function (err, stdout, stderr) {
+        if (err) {
+            deferred.reject(err);
+        } else {
+            console.log(stdout);
+            deferred.resolve();
+        }
+    });
+
+    return deferred.promise;
+})
 
 gulp.task('copy:www', ['compile:www', 'mkservedir:www', 'config:www'], function() {
     var deferred = Q.defer();
